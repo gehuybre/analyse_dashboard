@@ -311,7 +311,7 @@ function App() {
               {section.type === 'text' && (
                 <div>
                   {section.title && <h3 className="text-xl font-medium mb-3">{section.title}</h3>}
-                  <div className="prose prose-lg max-w-none">
+                  <div className="max-w-none">
                     <p className="whitespace-pre-wrap">{section.content}</p>
                   </div>
                 </div>
