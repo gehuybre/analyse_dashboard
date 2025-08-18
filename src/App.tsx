@@ -28,7 +28,8 @@ import {
   ArrowLeft,
   ExternalLink,
   CircleQuestion,
-  Sparkle
+  Sparkle,
+  Share
 } from '@phosphor-icons/react';
 import { Report, ReportSection } from '@/lib/types';
 import { Toaster } from '@/components/ui/sonner';
