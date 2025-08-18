@@ -314,6 +314,16 @@ function App() {
         </div>
 
         <div className="report-content space-y-8">
+          <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 text-sm font-medium text-accent-foreground mb-1">
+              <Share className="w-4 h-4" />
+              Embeddable Content
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Hover over charts and tables to reveal embed buttons for easy sharing on external websites.
+            </p>
+          </div>
+          
           {report.content.map((section: ReportSection) => (
             <div key={section.id}>
               {section.type === 'heading' && (

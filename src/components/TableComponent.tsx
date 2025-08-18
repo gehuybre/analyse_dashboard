@@ -44,7 +44,7 @@ export function TableComponent({
             variant="outline"
             size="sm"
             onClick={handleEmbed}
-            className="bg-background/90 backdrop-blur-sm"
+            className="bg-background/95 backdrop-blur-sm hover:bg-background embed-button"
           >
             <Share className="w-4 h-4 mr-1" />
             Embed

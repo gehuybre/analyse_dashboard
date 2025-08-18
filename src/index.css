@@ -119,9 +119,22 @@ body {
   top: 8px;
   right: 8px;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .embeddable-content:hover .embed-overlay {
   opacity: 1;
+  transform: translateY(-2px);
+}
+
+.embed-overlay .embed-button {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
+}
+
+.embed-overlay .embed-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }

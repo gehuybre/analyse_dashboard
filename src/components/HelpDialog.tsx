@@ -83,14 +83,36 @@ export function HelpDialog({ open, onOpenChange }: HelpDialogProps) {
               Embedding Content
             </h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Share individual charts and tables via iframe embedding:
+              Embed individual charts and tables on external websites:
             </p>
-            <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-              <li>• Hover over charts/tables and click the share button</li>
-              <li>• Get direct links and iframe codes</li>
-              <li>• Customize dimensions for your website</li>
-              <li>• Preview before embedding</li>
-            </ul>
+            <div className="space-y-3">
+              <div className="bg-muted p-3 rounded-lg">
+                <h4 className="font-medium text-sm mb-2">How to Embed:</h4>
+                <ol className="text-sm text-muted-foreground space-y-1 ml-4 list-decimal">
+                  <li>Hover over any chart or table in a report</li>
+                  <li>Click the "Embed" button that appears</li>
+                  <li>Choose your preferred format:</li>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• <strong>HTML iframe:</strong> Standard web embedding</li>
+                    <li>• <strong>Direct Link:</strong> Share standalone view</li>
+                    <li>• <strong>WordPress:</strong> Shortcode for WordPress sites</li>
+                    <li>• <strong>Markdown:</strong> For GitHub, docs, and wikis</li>
+                  </ul>
+                  <li>Adjust width and height as needed</li>
+                  <li>Copy the code and paste into your website</li>
+                </ol>
+              </div>
+              <div className="bg-accent/10 p-3 rounded-lg">
+                <h4 className="font-medium text-sm mb-2">✨ Features:</h4>
+                <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                  <li>• Responsive design adapts to container</li>
+                  <li>• Interactive charts work in embeds</li>
+                  <li>• Clean, borderless appearance</li>
+                  <li>• Live preview before embedding</li>
+                  <li>• Works on any website or platform</li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <Separator />
