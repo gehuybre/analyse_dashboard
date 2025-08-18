@@ -7,7 +7,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
-import { FileText, Eye, Lock, DotsThree, Pencil, Trash } from '@phosphor-icons/react';
+import { FileText, Eye, DotsThree, Pencil, Trash } from '@phosphor-icons/react';
 import { Report } from '@/lib/types';
 
 interface ReportCardProps {
@@ -56,12 +56,6 @@ export function ReportCard({
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            {showPrivacyBadge && report.isPrivate && (
-              <Badge variant="secondary">
-                <Lock className="w-3 h-3 mr-1" />
-                Private
-              </Badge>
-            )}
             {showActions && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LoginDialog } from '@/components/LoginDialog';
 import { EmbedDialog } from '@/components/EmbedDialog';
 import { HelpDialog } from '@/components/HelpDialog';
 import { WelcomeDialog } from '@/components/WelcomeDialog';
@@ -16,7 +14,6 @@ import { ChartComponent } from '@/components/ChartComponent';
 import { TableComponent } from '@/components/TableComponent';
 import { PdfExport } from '@/components/PdfExport';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
-import { useAuth } from '@/hooks/use-auth';
 import { useReports } from '@/hooks/use-reports';
 import { useKV } from '@github/spark/hooks';
 import { 
@@ -24,16 +21,10 @@ import {
   FileText, 
   Plus, 
   Search, 
-  Lock, 
-  Eye, 
-  Settings,
   ArrowLeft,
-  ExternalLink,
   CircleQuestion,
-  Sparkle,
   Share,
-  Download,
-  User
+  Download
 } from '@phosphor-icons/react';
 import { Report, ReportSection } from '@/lib/types';
 import { Toaster } from '@/components/ui/sonner';
@@ -44,7 +35,6 @@ function App() {
   const [editingReportId, setEditingReportId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('all');
-  const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showEmbedDialog, setShowEmbedDialog] = useState(false);
   const [showReportEditor, setShowReportEditor] = useState(false);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
@@ -59,24 +49,18 @@ function App() {
   const embedId = urlParams.get('id');
   const isEmbedMode = embedMode === 'true' && embedType && embedId;
 
-  const { isAuthenticated, logout, user } = useAuth();
-  const { reports, addReport, updateReport, deleteReport, getPublicReports, getPrivateReports, getReport } = useReports();
+  const { reports, addReport, updateReport, deleteReport, getReport } = useReports();
 
   // Get unique topics for filter
   const topics = Array.from(new Set(reports.map(r => r.topic)));
 
   // Filter reports based on search and topic
-  const filterReports = (reportList: Report[]) => {
-    return reportList.filter(report => {
-      const matchesSearch = report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          report.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesTopic = selectedTopic === 'all' || report.topic === selectedTopic;
-      return matchesSearch && matchesTopic;
-    });
-  };
-
-  const publicReports = filterReports(getPublicReports());
-  const privateReports = filterReports(getPrivateReports());
+  const filteredReports = reports.filter(report => {
+    const matchesSearch = report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        report.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTopic = selectedTopic === 'all' || report.topic === selectedTopic;
+    return matchesSearch && matchesTopic;
+  });
 
   const handleViewReport = (reportId: string) => {
     setSelectedReportId(reportId);
@@ -89,10 +73,6 @@ function App() {
   };
 
   const handleCreateReport = () => {
-    if (!isAuthenticated) {
-      setShowLoginDialog(true);
-      return;
-    }
     setShowReportEditor(true);
   };
 
@@ -106,19 +86,11 @@ function App() {
   };
 
   const handleEditReport = (reportId: string) => {
-    if (!isAuthenticated) {
-      setShowLoginDialog(true);
-      return;
-    }
     setEditingReportId(reportId);
     setShowReportEditor(true);
   };
 
   const handleDeleteReport = (reportId: string) => {
-    if (!isAuthenticated) {
-      setShowLoginDialog(true);
-      return;
-    }
     const report = getReport(reportId);
     if (report) {
       setReportToDelete(report);
@@ -177,106 +149,38 @@ function App() {
         </Button>
       </div>
 
-      <Tabs defaultValue="public" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="public" className="flex items-center gap-2">
-            <Eye className="w-4 h-4" />
-            Public Reports ({publicReports.length})
-          </TabsTrigger>
-          <TabsTrigger 
-            value="private" 
-            className="flex items-center gap-2"
-            onClick={() => !isAuthenticated && setShowLoginDialog(true)}
-          >
-            <Lock className="w-4 h-4" />
-            Private Reports ({isAuthenticated ? privateReports.length : '?'})
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="public" className="mt-6">
-          {publicReports.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <FileText className="w-12 h-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No public reports found</h3>
-                <p className="text-muted-foreground text-center mb-4">
-                  {searchTerm || selectedTopic !== 'all' 
-                    ? 'Try adjusting your search or filter criteria'
-                    : 'Create your first report to get started'
-                  }
-                </p>
-                <Button variant="outline" onClick={handleCreateReport}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Report
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {publicReports.map(report => (
-                <ReportCard
-                  key={report.id}
-                  report={report}
-                  onView={handleViewReport}
-                  onEdit={handleEditReport}
-                  onDelete={handleDeleteReport}
-                  showPrivacyBadge={false}
-                  showActions={isAuthenticated}
-                />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="private" className="mt-6">
-          {!isAuthenticated ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Lock className="w-12 h-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Authentication Required</h3>
-                <p className="text-muted-foreground text-center mb-4">
-                  Please log in to access private reports
-                </p>
-                <Button onClick={() => setShowLoginDialog(true)}>
-                  <Lock className="w-4 h-4 mr-2" />
-                  Admin Login
-                </Button>
-              </CardContent>
-            </Card>
-          ) : privateReports.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <FileText className="w-12 h-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No private reports found</h3>
-                <p className="text-muted-foreground text-center mb-4">
-                  {searchTerm || selectedTopic !== 'all' 
-                    ? 'Try adjusting your search or filter criteria'
-                    : 'Create your first private report'
-                  }
-                </p>
-                <Button variant="outline" onClick={handleCreateReport}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Private Report
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {privateReports.map(report => (
-                <ReportCard
-                  key={report.id}
-                  report={report}
-                  onView={handleViewReport}
-                  onEdit={handleEditReport}
-                  onDelete={handleDeleteReport}
-                  showPrivacyBadge={true}
-                  showActions={true}
-                />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      {filteredReports.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <FileText className="w-12 h-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No reports found</h3>
+            <p className="text-muted-foreground text-center mb-4">
+              {searchTerm || selectedTopic !== 'all' 
+                ? 'Try adjusting your search or filter criteria'
+                : 'Create your first report to get started'
+              }
+            </p>
+            <Button variant="outline" onClick={handleCreateReport}>
+              <Plus className="w-4 h-4 mr-2" />
+              Create Report
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredReports.map(report => (
+            <ReportCard
+              key={report.id}
+              report={report}
+              onView={handleViewReport}
+              onEdit={handleEditReport}
+              onDelete={handleDeleteReport}
+              showPrivacyBadge={false}
+              showActions={true}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -294,32 +198,6 @@ function App() {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Dashboard
               </Button>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
-
-    if (report.isPrivate && !isAuthenticated) {
-      return (
-        <div className="container mx-auto px-4 py-8">
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Lock className="w-12 h-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Access Restricted</h3>
-              <p className="text-muted-foreground text-center mb-4">
-                This report requires authentication to view
-              </p>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setCurrentView('dashboard')}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
-                </Button>
-                <Button onClick={() => setShowLoginDialog(true)}>
-                  <Lock className="w-4 h-4 mr-2" />
-                  Login
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -351,12 +229,6 @@ function App() {
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <Badge variant="secondary">{report.topic}</Badge>
                 <span>{formattedDate}</span>
-                {report.isPrivate && (
-                  <Badge variant="outline">
-                    <Lock className="w-3 h-3 mr-1" />
-                    Private
-                  </Badge>
-                )}
               </div>
             </div>
             <div className="ml-4">
@@ -493,32 +365,13 @@ function App() {
               <CircleQuestion className="w-4 h-4 mr-1" />
               Help
             </Button>
-            {isAuthenticated && (
-              <>
-                {user && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="w-4 h-4" />
-                    {user.name}
-                  </div>
-                )}
-                <Button variant="outline" size="sm" onClick={() => {
-                  setEditingReportId(null);
-                  setShowReportEditor(true);
-                }}>
-                  <Plus className="w-4 h-4 mr-1" />
-                  New Report
-                </Button>
-                <Button variant="ghost" size="sm" onClick={logout}>
-                  Logout
-                </Button>
-              </>
-            )}
-            {!isAuthenticated && (
-              <Button variant="outline" size="sm" onClick={() => setShowLoginDialog(true)}>
-                <Lock className="w-4 h-4 mr-1" />
-                Admin Login
-              </Button>
-            )}
+            <Button variant="outline" size="sm" onClick={() => {
+              setEditingReportId(null);
+              setShowReportEditor(true);
+            }}>
+              <Plus className="w-4 h-4 mr-1" />
+              New Report
+            </Button>
           </div>
         </div>
       </div>
@@ -535,11 +388,6 @@ function App() {
           
           {currentView === 'dashboard' && renderDashboard()}
           {currentView === 'report' && renderReport()}
-
-          <LoginDialog
-            open={showLoginDialog}
-            onOpenChange={setShowLoginDialog}
-          />
 
           <EmbedDialog
             open={showEmbedDialog}
@@ -590,17 +438,15 @@ function App() {
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>Interactive Plotly Charts</li>
                     <li>CSV Data Upload</li>
-                    <li>Google Authentication</li>
                     <li>Embeddable Content</li>
-                    <li>Public & Private Reports</li>
+                    <li>Public Reports</li>
                     <li>Export to Markdown</li>
                   </ul>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-3">Getting Started</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>Browse public reports</li>
-                    <li>Sign in with Google or password: admin123</li>
+                    <li>Browse existing reports</li>
                     <li>Upload CSV data or create charts</li>
                     <li>Create and edit reports</li>
                     <li>Share via embed codes</li>

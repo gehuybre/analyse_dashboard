@@ -32,14 +32,6 @@ export function useReports() {
     return reports.find(report => report.id === id);
   };
 
-  const getPublicReports = () => {
-    return reports.filter(report => !report.isPrivate && report.status === 'published');
-  };
-
-  const getPrivateReports = () => {
-    return reports.filter(report => report.isPrivate);
-  };
-
   const getReportsByTopic = (topic: string) => {
     return reports.filter(report => report.topic === topic && report.status === 'published');
   };
@@ -50,8 +42,6 @@ export function useReports() {
     updateReport,
     deleteReport,
     getReport,
-    getPublicReports,
-    getPrivateReports,
     getReportsByTopic
   };
 }

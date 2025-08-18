@@ -7,31 +7,29 @@
 **Success Indicators**: 
 - Users can create comprehensive reports with mixed content types
 - Charts and tables can be embedded on external websites via iframe
-- Authentication ensures secure access with multiple login options
 - CSV data can be uploaded and transformed into tables
 - Reports can be exported for offline use
 - Clean, professional interface promotes content discovery and consumption
 
-**Experience Qualities**: Professional, Intuitive, Embeddable, Secure
+**Experience Qualities**: Professional, Intuitive, Embeddable, Accessible
 
 ## Project Classification & Approach
 
-**Complexity Level**: Light Application with authentication, file upload, and export capabilities
+**Complexity Level**: Light Application with file upload and export capabilities
 **Primary User Activity**: Creating, editing, and consuming data analysis reports
 
 ## Thought Process for Feature Selection
 
-**Core Problem Analysis**: Data analysts need a platform to present their Python/VS Code analysis work in a professional, shareable format with both public and private access controls, easy data upload, and export capabilities.
+**Core Problem Analysis**: Data analysts need a platform to present their Python/VS Code analysis work in a professional, shareable format with easy data upload and export capabilities.
 
-**User Context**: Analysts will create reports containing mixed content (text, charts, tables), upload CSV data, edit existing reports, and need to share specific visualizations with external websites while maintaining control over sensitive information.
+**User Context**: Analysts will create reports containing mixed content (text, charts, tables), upload CSV data, edit existing reports, and need to share specific visualizations with external websites.
 
 **Critical Path**: 
-1. Browse public reports → View content → (Optional) Authenticate for private content
-2. Login → Create/Edit report → Upload CSV or add content sections → Save → Export or Share embed codes
+1. Browse reports → View content → Create new report
+2. Create/Edit report → Upload CSV or add content sections → Save → Export or Share embed codes
 
 **Key Moments**: 
 - First-time discovery through sample reports
-- Seamless authentication experience (Google + password)
 - CSV upload and automatic table generation
 - Content editing workflow with immediate preview
 - Report export for offline sharing
@@ -40,14 +38,9 @@
 ## Essential Features
 
 ### Public Report Browsing
-- **Functionality**: View published reports without authentication, search and filter by topic
+- **Functionality**: View and search all published reports by topic, completely open access
 - **Purpose**: Demonstrates platform capabilities and provides immediate value
-- **Success Criteria**: Users can discover and read sample reports instantly
-
-### Multi-Modal Authentication
-- **Functionality**: Google OAuth integration + password authentication for admin access
-- **Purpose**: Provides flexible, secure access with user preference support
-- **Success Criteria**: Users can authenticate via preferred method and maintain session
+- **Success Criteria**: Users can discover and read all reports instantly
 
 ### Report Creation & Editing Interface
 - **Functionality**: Multi-section editor supporting text, headings, charts (Plotly JSON), and tables with edit/delete capabilities
@@ -65,20 +58,14 @@
 - **Success Criteria**: Generated files preserve content structure and formatting
 
 ### Content Management
-- **Functionality**: Edit existing reports, delete reports with confirmation dialogs
-- **Purpose**: Allows content maintenance and lifecycle management
-- **Success Criteria**: Users can modify and remove content with appropriate safeguards
-- **Success Criteria**: Users can create professional long-form reports with mixed content
+- **Functionality**: Edit existing reports, delete reports with confirmation dialogs, topic categorization, search, draft/published status
+- **Purpose**: Allows content maintenance, lifecycle management, and organization for easy discovery
+- **Success Criteria**: Users can modify, remove, and find content with appropriate safeguards
 
 ### Embedding System
 - **Functionality**: Generate iframe codes and direct links for individual charts/tables
 - **Purpose**: Allows external websites to integrate specific visualizations
 - **Success Criteria**: External sites can embed content with customizable dimensions
-
-### Content Management
-- **Functionality**: Topic categorization, search, draft/published status
-- **Purpose**: Organizes reports for easy discovery and management
-- **Success Criteria**: Users can find specific reports quickly and manage their content
 
 ## Design Direction
 

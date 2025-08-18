@@ -6,7 +6,6 @@ export const sampleReports: Report[] = [
     title: 'Q4 2024 Sales Performance Analysis',
     topic: 'Market Analysis',
     description: 'Comprehensive analysis of quarterly sales performance across all regions with growth projections.',
-    isPrivate: false,
     publishedAt: '2024-01-15T10:00:00Z',
     status: 'published',
     content: [
@@ -81,7 +80,6 @@ export const sampleReports: Report[] = [
     title: 'Customer Satisfaction Survey Results',
     topic: 'Customer Insights',
     description: 'Analysis of our annual customer satisfaction survey covering 2,500+ respondents across all service categories.',
-    isPrivate: false,
     publishedAt: '2024-01-10T14:30:00Z',
     status: 'published',
     content: [
@@ -150,72 +148,62 @@ export const sampleReports: Report[] = [
   },
   {
     id: '3',
-    title: 'Internal Financial Dashboard - Q4 Review',
-    topic: 'Financial Performance',
-    description: 'Confidential financial analysis including sensitive revenue projections and internal cost breakdowns.',
-    isPrivate: true,
+    title: 'Technology Innovation Trends 2024',
+    topic: 'Technology Research',
+    description: 'Analysis of emerging technology trends and their potential impact on business operations and strategy.',
     publishedAt: '2024-01-12T09:15:00Z',
     status: 'published',
     content: [
       {
         id: 'h1',
         type: 'heading',
-        title: 'Confidential Financial Analysis',
+        title: 'Technology Innovation Overview',
         content: ''
       },
       {
         id: 't1',
         type: 'text',
-        title: 'Access Restricted',
-        content: 'This report contains sensitive financial information including revenue projections, cost analysis, and strategic planning data. Access is restricted to authorized personnel only.\n\nFor access to this content, please contact your administrator or use the admin login feature.'
+        title: '',
+        content: 'This report examines the key technology trends shaping business operations in 2024, including artificial intelligence adoption, cloud computing advancements, and emerging cybersecurity challenges.\n\nOur analysis covers market impact, implementation costs, and strategic recommendations for technology adoption across various business functions.'
       },
       {
         id: 'c1',
         type: 'chart',
-        title: 'Revenue vs Costs Analysis',
+        title: 'Technology Adoption Rates',
         content: {
           data: [
             {
-              x: ['Q1', 'Q2', 'Q3', 'Q4'],
-              y: [485000, 512000, 548000, 612000],
-              type: 'scatter',
-              mode: 'lines+markers',
-              name: 'Revenue',
-              line: { color: '#10b981', width: 3 },
-              marker: { size: 8 }
-            },
-            {
-              x: ['Q1', 'Q2', 'Q3', 'Q4'],
-              y: [320000, 335000, 365000, 390000],
-              type: 'scatter',
-              mode: 'lines+markers',
-              name: 'Operating Costs',
-              line: { color: '#ef4444', width: 3 },
-              marker: { size: 8 }
+              x: ['AI/ML', 'Cloud Computing', 'IoT', 'Blockchain', 'AR/VR'],
+              y: [78, 92, 65, 34, 28],
+              type: 'bar',
+              marker: { 
+                color: ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444']
+              },
+              text: ['78%', '92%', '65%', '34%', '28%'],
+              textposition: 'auto'
             }
           ],
           layout: {
             title: '',
-            xaxis: { title: 'Quarter' },
-            yaxis: { title: 'Amount (USD)', tickformat: '$,.0f' },
+            xaxis: { title: 'Technology' },
+            yaxis: { title: 'Adoption Rate (%)', range: [0, 100] },
             margin: { l: 60, r: 40, t: 40, b: 60 },
             plot_bgcolor: 'rgba(0,0,0,0)',
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            legend: { x: 0, y: 1.1, orientation: 'h' }
+            paper_bgcolor: 'rgba(0,0,0,0)'
           }
         }
       },
       {
         id: 'table1',
         type: 'table',
-        title: 'Cost Breakdown by Category',
+        title: 'Implementation Cost Analysis',
         content: {
-          headers: ['Category', 'Q4 Expense', '% of Revenue', 'Budget Variance'],
+          headers: ['Technology', 'Initial Investment', 'Annual Maintenance', 'ROI Timeline'],
           rows: [
-            ['Personnel', '$185,000', '30.2%', '-2.1%'],
-            ['Technology', '$89,000', '14.5%', '+1.3%'],
-            ['Marketing', '$67,000', '10.9%', '-0.8%'],
-            ['Operations', '$49,000', '8.0%', '+0.5%']
+            ['AI/ML Solutions', '$150K - $500K', '$25K - $75K', '12-18 months'],
+            ['Cloud Migration', '$75K - $200K', '$15K - $40K', '6-12 months'],
+            ['IoT Infrastructure', '$100K - $300K', '$20K - $50K', '18-24 months'],
+            ['Blockchain Platform', '$200K - $800K', '$50K - $150K', '24-36 months']
           ]
         }
       }

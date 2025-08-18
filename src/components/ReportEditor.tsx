@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -35,7 +34,6 @@ export function ReportEditor({ open, onOpenChange, report, onSave }: ReportEdito
   const [title, setTitle] = useState(report?.title || '');
   const [description, setDescription] = useState(report?.description || '');
   const [topic, setTopic] = useState(report?.topic || '');
-  const [isPrivate, setIsPrivate] = useState(report?.isPrivate || false);
   const [sections, setSections] = useState<ReportSection[]>(report?.content || []);
 
   const addSection = (type: ReportSection['type']) => {
@@ -82,7 +80,6 @@ export function ReportEditor({ open, onOpenChange, report, onSave }: ReportEdito
       title: title.trim(),
       description: description.trim(),
       topic,
-      isPrivate,
       content: sections,
       status: 'published',
       publishedAt: new Date().toISOString()
@@ -137,15 +134,6 @@ export function ReportEditor({ open, onOpenChange, report, onSave }: ReportEdito
               placeholder="Brief description of the report..."
               rows={3}
             />
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="private"
-              checked={isPrivate}
-              onCheckedChange={setIsPrivate}
-            />
-            <Label htmlFor="private">Private Report (requires authentication)</Label>
           </div>
 
           <div>
