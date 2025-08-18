@@ -27,7 +27,15 @@ export interface TableData {
   rows: any[][];
 }
 
+export interface GoogleUser {
+  id: string;
+  email: string;
+  name: string;
+  picture: string;
+}
+
 export interface AuthState {
   isAuthenticated: boolean;
   hasAccess: boolean;
+  user?: GoogleUser;
 }

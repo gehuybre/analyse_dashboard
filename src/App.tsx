@@ -14,6 +14,8 @@ import { ReportCard } from '@/components/ReportCard';
 import { ReportEditor } from '@/components/ReportEditor';
 import { ChartComponent } from '@/components/ChartComponent';
 import { TableComponent } from '@/components/TableComponent';
+import { PdfExport } from '@/components/PdfExport';
+import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { useAuth } from '@/hooks/use-auth';
 import { useReports } from '@/hooks/use-reports';
 import { useKV } from '@github/spark/hooks';
@@ -29,7 +31,9 @@ import {
   ExternalLink,
   CircleQuestion,
   Sparkle,
-  Share
+  Share,
+  Download,
+  User
 } from '@phosphor-icons/react';
 import { Report, ReportSection } from '@/lib/types';
 import { Toaster } from '@/components/ui/sonner';
@@ -37,12 +41,15 @@ import { Toaster } from '@/components/ui/sonner';
 function App() {
   const [currentView, setCurrentView] = useKV<string>('current-view', 'dashboard');
   const [selectedReportId, setSelectedReportId] = useKV<string>('selected-report-id', '');
+  const [editingReportId, setEditingReportId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('all');
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showEmbedDialog, setShowEmbedDialog] = useState(false);
   const [showReportEditor, setShowReportEditor] = useState(false);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState<Report | null>(null);
   const [embedContent, setEmbedContent] = useState<{type: 'chart' | 'table', id: string, title: string} | null>(null);
 
   // Check for embed mode from URL
@@ -52,8 +59,8 @@ function App() {
   const embedId = urlParams.get('id');
   const isEmbedMode = embedMode === 'true' && embedType && embedId;
 
-  const { isAuthenticated, logout } = useAuth();
-  const { reports, addReport, getPublicReports, getPrivateReports, getReport } = useReports();
+  const { isAuthenticated, logout, user } = useAuth();
+  const { reports, addReport, updateReport, deleteReport, getPublicReports, getPrivateReports, getReport } = useReports();
 
   // Get unique topics for filter
   const topics = Array.from(new Set(reports.map(r => r.topic)));
@@ -90,7 +97,44 @@ function App() {
   };
 
   const handleSaveReport = (reportData: Omit<Report, 'id'>) => {
-    addReport(reportData);
+    if (editingReportId) {
+      updateReport(editingReportId, reportData);
+    } else {
+      addReport(reportData);
+    }
+    setEditingReportId(null);
+  };
+
+  const handleEditReport = (reportId: string) => {
+    if (!isAuthenticated) {
+      setShowLoginDialog(true);
+      return;
+    }
+    setEditingReportId(reportId);
+    setShowReportEditor(true);
+  };
+
+  const handleDeleteReport = (reportId: string) => {
+    if (!isAuthenticated) {
+      setShowLoginDialog(true);
+      return;
+    }
+    const report = getReport(reportId);
+    if (report) {
+      setReportToDelete(report);
+      setShowDeleteDialog(true);
+    }
+  };
+
+  const confirmDeleteReport = () => {
+    if (reportToDelete) {
+      deleteReport(reportToDelete.id);
+      setReportToDelete(null);
+      // If we're currently viewing the deleted report, go back to dashboard
+      if (selectedReportId === reportToDelete.id) {
+        setCurrentView('dashboard');
+      }
+    }
   };
 
   const renderDashboard = () => (
@@ -174,7 +218,10 @@ function App() {
                   key={report.id}
                   report={report}
                   onView={handleViewReport}
+                  onEdit={handleEditReport}
+                  onDelete={handleDeleteReport}
                   showPrivacyBadge={false}
+                  showActions={isAuthenticated}
                 />
               ))}
             </div>
@@ -220,7 +267,10 @@ function App() {
                   key={report.id}
                   report={report}
                   onView={handleViewReport}
+                  onEdit={handleEditReport}
+                  onDelete={handleDeleteReport}
                   showPrivacyBadge={true}
+                  showActions={true}
                 />
               ))}
             </div>
@@ -309,9 +359,20 @@ function App() {
                 )}
               </div>
             </div>
+            <div className="ml-4">
+              <Button variant="outline" size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+            </div>
           </div>
           
           <Separator className="my-6" />
+          
+          {/* Export Options */}
+          <div className="mb-6">
+            <PdfExport report={report} />
+          </div>
         </div>
 
         <div className="report-content space-y-8">
@@ -434,7 +495,16 @@ function App() {
             </Button>
             {isAuthenticated && (
               <>
-                <Button variant="outline" size="sm" onClick={() => setShowReportEditor(true)}>
+                {user && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User className="w-4 h-4" />
+                    {user.name}
+                  </div>
+                )}
+                <Button variant="outline" size="sm" onClick={() => {
+                  setEditingReportId(null);
+                  setShowReportEditor(true);
+                }}>
                   <Plus className="w-4 h-4 mr-1" />
                   New Report
                 </Button>
@@ -481,8 +551,20 @@ function App() {
 
           <ReportEditor
             open={showReportEditor}
-            onOpenChange={setShowReportEditor}
+            onOpenChange={(open) => {
+              setShowReportEditor(open);
+              if (!open) setEditingReportId(null);
+            }}
+            report={editingReportId ? getReport(editingReportId) : undefined}
             onSave={handleSaveReport}
+          />
+
+          <DeleteConfirmDialog
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+            onConfirm={confirmDeleteReport}
+            title={reportToDelete?.title || ''}
+            description="This action cannot be undone. All report data will be permanently deleted."
           />
 
           <HelpDialog
@@ -507,17 +589,20 @@ function App() {
                   <h3 className="font-semibold mb-3">Features</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>Interactive Plotly Charts</li>
+                    <li>CSV Data Upload</li>
+                    <li>Google Authentication</li>
                     <li>Embeddable Content</li>
                     <li>Public & Private Reports</li>
-                    <li>Long-form Report Format</li>
+                    <li>Export to Markdown</li>
                   </ul>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-3">Getting Started</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>Browse public reports</li>
-                    <li>Use admin password: admin123</li>
-                    <li>Create your first report</li>
+                    <li>Sign in with Google or password: admin123</li>
+                    <li>Upload CSV data or create charts</li>
+                    <li>Create and edit reports</li>
                     <li>Share via embed codes</li>
                   </ul>
                 </div>

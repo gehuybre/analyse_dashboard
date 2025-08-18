@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Separator } from '@/components/ui/separator';
+import { GoogleAuth } from '@/components/GoogleAuth';
 import { useAuth } from '@/hooks/use-auth';
+import { GoogleUser } from '@/lib/types';
 import { Lock } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -13,11 +16,11 @@ interface LoginDialogProps {
 
 export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
+  const { loginWithPassword, loginWithGoogle, user } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(password)) {
+    if (loginWithPassword(password)) {
       toast.success('Successfully authenticated');
       onOpenChange(false);
       setPassword('');
@@ -25,6 +28,16 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
       toast.error('Invalid password');
       setPassword('');
     }
+  };
+
+  const handleGoogleLogin = (googleUser: GoogleUser) => {
+    loginWithGoogle(googleUser);
+    toast.success(`Welcome back, ${googleUser.name}!`);
+    onOpenChange(false);
+  };
+
+  const handleGoogleLogout = () => {
+    // This shouldn't happen in the login dialog, but included for completeness
   };
 
   return (
@@ -36,29 +49,45 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
             Admin Access Required
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              type="password"
-              placeholder="Enter admin password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full"
-              autoFocus
-            />
-            <p className="text-sm text-muted-foreground mt-2">
-              Demo password: admin123
-            </p>
+        
+        <div className="space-y-6">
+          {/* Google Login */}
+          <GoogleAuth
+            onLogin={handleGoogleLogin}
+            onLogout={handleGoogleLogout}
+            currentUser={user}
+          />
+
+          <div className="flex items-center gap-2">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">OR</span>
+            <Separator className="flex-1" />
           </div>
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit">
-              Login
-            </Button>
-          </div>
-        </form>
+
+          {/* Password Login */}
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <Input
+                type="password"
+                placeholder="Enter admin password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full"
+              />
+              <p className="text-sm text-muted-foreground mt-2">
+                Demo password: admin123
+              </p>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                Login
+              </Button>
+            </div>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

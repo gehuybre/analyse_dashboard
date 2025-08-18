@@ -1,5 +1,5 @@
 import { useKV } from '@github/spark/hooks';
-import { AuthState } from '@/lib/types';
+import { AuthState, GoogleUser } from '@/lib/types';
 
 const ADMIN_PASSWORD = 'admin123'; // In production, this would be hashed and stored securely
 
@@ -9,7 +9,7 @@ export function useAuth() {
     hasAccess: false
   });
 
-  const login = (password: string): boolean => {
+  const loginWithPassword = (password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
       setAuthState({
         isAuthenticated: true,
@@ -20,17 +20,28 @@ export function useAuth() {
     return false;
   };
 
+  const loginWithGoogle = (user: GoogleUser) => {
+    setAuthState({
+      isAuthenticated: true,
+      hasAccess: true,
+      user
+    });
+  };
+
   const logout = () => {
     setAuthState({
       isAuthenticated: false,
-      hasAccess: false
+      hasAccess: false,
+      user: undefined
     });
   };
 
   return {
     isAuthenticated: authState.isAuthenticated,
     hasAccess: authState.hasAccess,
-    login,
+    user: authState.user,
+    loginWithPassword,
+    loginWithGoogle,
     logout
   };
 }

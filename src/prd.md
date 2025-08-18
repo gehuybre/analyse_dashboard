@@ -7,30 +7,34 @@
 **Success Indicators**: 
 - Users can create comprehensive reports with mixed content types
 - Charts and tables can be embedded on external websites via iframe
-- Password protection ensures sensitive data security
+- Authentication ensures secure access with multiple login options
+- CSV data can be uploaded and transformed into tables
+- Reports can be exported for offline use
 - Clean, professional interface promotes content discovery and consumption
 
-**Experience Qualities**: Professional, Intuitive, Embeddable
+**Experience Qualities**: Professional, Intuitive, Embeddable, Secure
 
 ## Project Classification & Approach
 
-**Complexity Level**: Light Application with basic state management and content creation capabilities
-**Primary User Activity**: Creating and consuming data analysis reports
+**Complexity Level**: Light Application with authentication, file upload, and export capabilities
+**Primary User Activity**: Creating, editing, and consuming data analysis reports
 
 ## Thought Process for Feature Selection
 
-**Core Problem Analysis**: Data analysts need a platform to present their Python/VS Code analysis work in a professional, shareable format with both public and private access controls.
+**Core Problem Analysis**: Data analysts need a platform to present their Python/VS Code analysis work in a professional, shareable format with both public and private access controls, easy data upload, and export capabilities.
 
-**User Context**: Analysts will create reports containing mixed content (text, charts, tables) and need to share specific visualizations with external websites while maintaining control over sensitive information.
+**User Context**: Analysts will create reports containing mixed content (text, charts, tables), upload CSV data, edit existing reports, and need to share specific visualizations with external websites while maintaining control over sensitive information.
 
 **Critical Path**: 
 1. Browse public reports → View content → (Optional) Authenticate for private content
-2. Login → Create report → Add content sections → Save → Share embed codes
+2. Login → Create/Edit report → Upload CSV or add content sections → Save → Export or Share embed codes
 
 **Key Moments**: 
 - First-time discovery through sample reports
-- Authentication experience for private content
-- Content creation workflow with immediate preview
+- Seamless authentication experience (Google + password)
+- CSV upload and automatic table generation
+- Content editing workflow with immediate preview
+- Report export for offline sharing
 - Embed code generation for external sharing
 
 ## Essential Features
@@ -40,14 +44,30 @@
 - **Purpose**: Demonstrates platform capabilities and provides immediate value
 - **Success Criteria**: Users can discover and read sample reports instantly
 
-### Private Report Access
-- **Functionality**: Password-protected reports with admin authentication
-- **Purpose**: Protects sensitive financial and internal data
-- **Success Criteria**: Only authenticated users can access private content
+### Multi-Modal Authentication
+- **Functionality**: Google OAuth integration + password authentication for admin access
+- **Purpose**: Provides flexible, secure access with user preference support
+- **Success Criteria**: Users can authenticate via preferred method and maintain session
 
-### Report Creation Interface
-- **Functionality**: Multi-section editor supporting text, headings, charts (Plotly JSON), and tables
-- **Purpose**: Enables comprehensive data analysis presentation
+### Report Creation & Editing Interface
+- **Functionality**: Multi-section editor supporting text, headings, charts (Plotly JSON), and tables with edit/delete capabilities
+- **Purpose**: Enables comprehensive data analysis presentation and maintenance
+- **Success Criteria**: Intuitive editing workflow with immediate preview and persistent changes
+
+### CSV Data Upload
+- **Functionality**: Direct CSV file upload with automatic parsing into table format
+- **Purpose**: Streamlines data import from analysis tools like Python/Excel
+- **Success Criteria**: Users can upload CSV files and see formatted tables instantly
+
+### Report Export System
+- **Functionality**: Export reports as Markdown files for offline sharing and documentation
+- **Purpose**: Enables offline consumption and integration with documentation workflows
+- **Success Criteria**: Generated files preserve content structure and formatting
+
+### Content Management
+- **Functionality**: Edit existing reports, delete reports with confirmation dialogs
+- **Purpose**: Allows content maintenance and lifecycle management
+- **Success Criteria**: Users can modify and remove content with appropriate safeguards
 - **Success Criteria**: Users can create professional long-form reports with mixed content
 
 ### Embedding System
@@ -112,12 +132,22 @@
 - **Styling**: Tailwind CSS with custom design system
 - **Charts**: Plotly.js for interactive data visualizations
 - **State Management**: Spark KV for persistent data storage
-- **Authentication**: Simple password-based admin access
+- **Authentication**: Google OAuth + password-based admin access
+- **File Processing**: CSV parsing for data upload
+- **Export**: Markdown generation for offline sharing
 
 ### Data Management
 - **Report Storage**: Persistent storage using Spark KV system
 - **Content Types**: Flexible section system supports text, charts, tables, headings
+- **CSV Upload**: Direct file processing with automatic table generation
 - **Sample Data**: Pre-populated reports demonstrate platform capabilities
+- **CRUD Operations**: Full create, read, update, delete functionality for reports
+
+### Authentication & Security
+- **Multi-Modal Auth**: Google OAuth integration + password fallback
+- **Session Management**: Persistent authentication state with user profile display
+- **Private Content**: Secure access control for sensitive reports
+- **Data Validation**: Input sanitization for user-generated content
 
 ### Embedding Architecture
 - **URL Structure**: Query parameters for embed mode, content type, and ID
@@ -125,9 +155,10 @@
 - **External Integration**: Direct links and iframe codes for easy sharing
 
 ### Security Considerations
-- **Private Content**: Password protection for sensitive reports
+- **Private Content**: Password and OAuth protection for sensitive reports
 - **Data Validation**: Input sanitization for user-generated content
 - **Access Control**: Clear separation between public and private content
+- **File Upload Security**: CSV parsing with error handling and validation
 
 ## Edge Cases & Problem Scenarios
 
@@ -135,9 +166,25 @@
 - **Problem**: Malformed Plotly JSON breaks visualization
 - **Solution**: Graceful error handling with helpful fallback messages
 
+### CSV Upload Issues
+- **Problem**: Malformed CSV files or unsupported formats
+- **Solution**: Comprehensive error handling with clear user feedback and format guidance
+
 ### Missing Content
 - **Problem**: Embedded content referenced by external sites gets deleted
 - **Solution**: Clear error messages explaining content unavailability
+
+### Authentication Failures
+- **Problem**: Google OAuth or password authentication fails
+- **Solution**: Fallback options and clear error messaging for users
+
+### Large File Uploads
+- **Problem**: Very large CSV files could impact performance
+- **Solution**: File size validation and progress indicators for user feedback
+
+### Export Limitations
+- **Problem**: Complex interactive charts cannot be fully represented in Markdown
+- **Solution**: Clear indication of content limitations with references to online versions
 
 ### Mobile Viewing
 - **Problem**: Complex charts may not display well on small screens

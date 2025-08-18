@@ -7,8 +7,10 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Save, X } from '@phosphor-icons/react';
-import { Report, ReportSection } from '@/lib/types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CsvUpload } from '@/components/CsvUpload';
+import { Plus, Save, X, Upload } from '@phosphor-icons/react';
+import { Report, ReportSection, TableData } from '@/lib/types';
 import { toast } from 'sonner';
 
 interface ReportEditorProps {
@@ -56,6 +58,18 @@ export function ReportEditor({ open, onOpenChange, report, onSave }: ReportEdito
 
   const removeSection = (id: string) => {
     setSections(current => current.filter(section => section.id !== id));
+  };
+
+  const handleCsvUpload = (sectionId: string) => (data: TableData, fileName: string) => {
+    updateSection(sectionId, { 
+      content: data,
+      title: fileName.replace('.csv', '')
+    });
+    toast.success('CSV data loaded successfully');
+  };
+
+  const handleCsvError = (error: string) => {
+    toast.error(error);
   };
 
   const handleSave = () => {
@@ -224,18 +238,32 @@ export function ReportEditor({ open, onOpenChange, report, onSave }: ReportEdito
                         />
                       )}
                       {section.type === 'table' && (
-                        <Textarea
-                          placeholder="Paste table data as JSON: {headers: [...], rows: [[...], [...]]}"
-                          value={JSON.stringify(section.content, null, 2)}
-                          onChange={(e) => {
-                            try {
-                              const content = JSON.parse(e.target.value);
-                              updateSection(section.id, { content });
-                            } catch {}
-                          }}
-                          rows={6}
-                          className="font-mono text-sm"
-                        />
+                        <Tabs defaultValue="manual" className="w-full">
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="manual">Manual Entry</TabsTrigger>
+                            <TabsTrigger value="upload">CSV Upload</TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="manual" className="mt-4">
+                            <Textarea
+                              placeholder="Paste table data as JSON: {headers: [...], rows: [[...], [...]]}"
+                              value={JSON.stringify(section.content, null, 2)}
+                              onChange={(e) => {
+                                try {
+                                  const content = JSON.parse(e.target.value);
+                                  updateSection(section.id, { content });
+                                } catch {}
+                              }}
+                              rows={6}
+                              className="font-mono text-sm"
+                            />
+                          </TabsContent>
+                          <TabsContent value="upload" className="mt-4">
+                            <CsvUpload
+                              onDataLoaded={handleCsvUpload(section.id)}
+                              onError={handleCsvError}
+                            />
+                          </TabsContent>
+                        </Tabs>
                       )}
                     </div>
                   </CardContent>
