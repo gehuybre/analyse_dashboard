@@ -328,6 +328,8 @@ function App() {
       <VisualizationGallery />
     </div>
   );
+
+  const renderEmbedView = () => {
     if (!embedId || !embedType) return null;
 
     // Find the content across all reports
