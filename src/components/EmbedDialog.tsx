@@ -19,7 +19,7 @@ export function EmbedDialog({ open, onOpenChange, contentType, contentId, title 
   const [height, setHeight] = useState('400');
 
   const baseUrl = window.location.origin;
-  const embedUrl = `${baseUrl}/embed/${contentType}/${contentId}`;
+  const embedUrl = `${baseUrl}/?embed=true&type=${contentType}&id=${contentId}`;
   const iframeCode = `<iframe src="${embedUrl}" width="${width}" height="${height}" frameborder="0" scrolling="no" title="${title}"></iframe>`;
 
   const copyToClipboard = (text: string, type: string) => {

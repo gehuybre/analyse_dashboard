@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Share } from '@phosphor-icons/react';
+import { Share, FileText } from '@phosphor-icons/react';
 import { TableData } from '@/lib/types';
 
 interface TableComponentProps {
@@ -21,6 +21,20 @@ export function TableComponent({
   const handleEmbed = () => {
     onEmbed?.(id, title);
   };
+
+  // Validate table data
+  if (!data || !data.headers || !data.rows || !Array.isArray(data.headers) || !Array.isArray(data.rows)) {
+    return (
+      <div className="embeddable-content chart-container">
+        <div className="flex items-center justify-center h-64 text-muted-foreground">
+          <div className="text-center">
+            <FileText className="w-12 h-12 mx-auto mb-2" />
+            <p>Table data not available</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="embeddable-content chart-container">

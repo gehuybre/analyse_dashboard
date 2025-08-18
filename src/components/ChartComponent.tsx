@@ -1,7 +1,7 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import { Button } from '@/components/ui/button';
-import { Share } from '@phosphor-icons/react';
+import { Share, BarChart3 } from '@phosphor-icons/react';
 import { ChartData } from '@/lib/types';
 
 interface ChartComponentProps {
@@ -22,6 +22,20 @@ export function ChartComponent({
   const handleEmbed = () => {
     onEmbed?.(id, title);
   };
+
+  // Validate chart data
+  if (!data || !data.data || !Array.isArray(data.data)) {
+    return (
+      <div className="embeddable-content chart-container">
+        <div className="flex items-center justify-center h-64 text-muted-foreground">
+          <div className="text-center">
+            <BarChart3 className="w-12 h-12 mx-auto mb-2" />
+            <p>Chart data not available</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="embeddable-content chart-container">
@@ -55,7 +69,7 @@ export function ChartComponent({
           responsive: true,
           ...data.config
         }}
-        style={{ width: '100%', height: '400px' }}
+        style={{ width: '100%', height: 'auto', minHeight: '300px' }}
         useResizeHandler={true}
       />
     </div>

@@ -1,8 +1,9 @@
 import { Report } from '@/lib/types';
+import { sampleReports } from '@/lib/sample-data';
 import { useKV } from '@github/spark/hooks';
 
 export function useReports() {
-  const [reports, setReports] = useKV<Report[]>('reports', []);
+  const [reports, setReports] = useKV<Report[]>('reports', sampleReports);
 
   const addReport = (report: Omit<Report, 'id'>) => {
     const newReport: Report = {

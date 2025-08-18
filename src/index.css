@@ -95,11 +95,23 @@ body {
   @apply bg-card border border-border rounded-lg p-4 mb-6;
 }
 
+@media (max-width: 768px) {
+  .chart-container {
+    @apply p-2;
+  }
+}
+
 .embeddable-content {
   position: relative;
   background: white;
   border-radius: 8px;
   padding: 16px;
+}
+
+@media (max-width: 768px) {
+  .embeddable-content {
+    padding: 8px;
+  }
 }
 
 .embed-overlay {

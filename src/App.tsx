@@ -8,6 +8,8 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoginDialog } from '@/components/LoginDialog';
 import { EmbedDialog } from '@/components/EmbedDialog';
+import { HelpDialog } from '@/components/HelpDialog';
+import { WelcomeDialog } from '@/components/WelcomeDialog';
 import { ReportCard } from '@/components/ReportCard';
 import { ReportEditor } from '@/components/ReportEditor';
 import { ChartComponent } from '@/components/ChartComponent';
@@ -24,7 +26,9 @@ import {
   Eye, 
   Settings,
   ArrowLeft,
-  ExternalLink
+  ExternalLink,
+  CircleQuestion,
+  Sparkle
 } from '@phosphor-icons/react';
 import { Report, ReportSection } from '@/lib/types';
 import { Toaster } from '@/components/ui/sonner';
@@ -37,7 +41,15 @@ function App() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showEmbedDialog, setShowEmbedDialog] = useState(false);
   const [showReportEditor, setShowReportEditor] = useState(false);
+  const [showHelpDialog, setShowHelpDialog] = useState(false);
   const [embedContent, setEmbedContent] = useState<{type: 'chart' | 'table', id: string, title: string} | null>(null);
+
+  // Check for embed mode from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const embedMode = urlParams.get('embed');
+  const embedType = urlParams.get('type') as 'chart' | 'table';
+  const embedId = urlParams.get('id');
+  const isEmbedMode = embedMode === 'true' && embedType && embedId;
 
   const { isAuthenticated, logout } = useAuth();
   const { reports, addReport, getPublicReports, getPrivateReports, getReport } = useReports();
@@ -341,6 +353,55 @@ function App() {
     );
   };
 
+  const renderEmbedView = () => {
+    if (!embedId || !embedType) return null;
+
+    // Find the content across all reports
+    let foundContent = null;
+    let foundTitle = '';
+
+    for (const report of reports) {
+      const section = report.content.find(section => section.id === embedId);
+      if (section && section.type === embedType) {
+        foundContent = section.content;
+        foundTitle = section.title || `${embedType} from ${report.title}`;
+        break;
+      }
+    }
+
+    if (!foundContent) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2">Content not found</h2>
+            <p className="text-muted-foreground">The requested {embedType} could not be found.</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-background p-4">
+        {embedType === 'chart' && (
+          <ChartComponent
+            data={foundContent}
+            title={foundTitle}
+            id={embedId}
+            showEmbedButton={false}
+          />
+        )}
+        {embedType === 'table' && (
+          <TableComponent
+            data={foundContent}
+            title={foundTitle}
+            id={embedId}
+            showEmbedButton={false}
+          />
+        )}
+      </div>
+    );
+  };
+
   const renderNavigation = () => (
     <nav className="border-b bg-background">
       <div className="container mx-auto px-4">
@@ -356,6 +417,10 @@ function App() {
           </div>
           
           <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => setShowHelpDialog(true)}>
+              <CircleQuestion className="w-4 h-4 mr-1" />
+              Help
+            </Button>
             {isAuthenticated && (
               <>
                 <Button variant="outline" size="sm" onClick={() => setShowReportEditor(true)}>
@@ -381,31 +446,78 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      {renderNavigation()}
-      
-      {currentView === 'dashboard' && renderDashboard()}
-      {currentView === 'report' && renderReport()}
+      {isEmbedMode ? (
+        renderEmbedView()
+      ) : (
+        <>
+          {renderNavigation()}
+          
+          {currentView === 'dashboard' && renderDashboard()}
+          {currentView === 'report' && renderReport()}
 
-      <LoginDialog
-        open={showLoginDialog}
-        onOpenChange={setShowLoginDialog}
-      />
+          <LoginDialog
+            open={showLoginDialog}
+            onOpenChange={setShowLoginDialog}
+          />
 
-      <EmbedDialog
-        open={showEmbedDialog}
-        onOpenChange={setShowEmbedDialog}
-        contentType={embedContent?.type || 'chart'}
-        contentId={embedContent?.id || ''}
-        title={embedContent?.title || ''}
-      />
+          <EmbedDialog
+            open={showEmbedDialog}
+            onOpenChange={setShowEmbedDialog}
+            contentType={embedContent?.type || 'chart'}
+            contentId={embedContent?.id || ''}
+            title={embedContent?.title || ''}
+          />
 
-      <ReportEditor
-        open={showReportEditor}
-        onOpenChange={setShowReportEditor}
-        onSave={handleSaveReport}
-      />
+          <ReportEditor
+            open={showReportEditor}
+            onOpenChange={setShowReportEditor}
+            onSave={handleSaveReport}
+          />
 
-      <Toaster />
+          <HelpDialog
+            open={showHelpDialog}
+            onOpenChange={setShowHelpDialog}
+          />
+
+          <WelcomeDialog />
+
+          <Toaster />
+          
+          <footer className="border-t bg-background mt-16">
+            <div className="container mx-auto px-4 py-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                  <h3 className="font-semibold mb-3">Analytics Platform</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Professional reporting platform for data analysis with embeddable charts and tables.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3">Features</h3>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>Interactive Plotly Charts</li>
+                    <li>Embeddable Content</li>
+                    <li>Public & Private Reports</li>
+                    <li>Long-form Report Format</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3">Getting Started</h3>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>Browse public reports</li>
+                    <li>Use admin password: admin123</li>
+                    <li>Create your first report</li>
+                    <li>Share via embed codes</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
+                <p>Built with React, Plotly.js, and Tailwind CSS</p>
+              </div>
+            </div>
+          </footer>
+        </>
+      )}
     </div>
   );
 }
