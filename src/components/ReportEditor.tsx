@@ -8,8 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CsvUpload } from '@/components/CsvUpload';
-import { Plus, Save, X, Upload } from '@phosphor-icons/react';
-import { Report, ReportSection, TableData } from '@/lib/types';
+import { ChartBuilder } from '@/components/ChartBuilder';
+import { Plus, Save, X, Upload, BarChart3 } from '@phosphor-icons/react';
+import { Report, ReportSection, TableData, ChartData } from '@/lib/types';
 import { toast } from 'sonner';
 
 interface ReportEditorProps {
@@ -66,8 +67,12 @@ export function ReportEditor({ open, onOpenChange, report, onSave }: ReportEdito
     toast.success('CSV data loaded successfully');
   };
 
-  const handleCsvError = (error: string) => {
-    toast.error(error);
+  const handleChartCreate = (sectionId: string) => (chartData: ChartData, title: string) => {
+    updateSection(sectionId, {
+      content: chartData,
+      title: title
+    });
+    toast.success('Chart created successfully');
   };
 
   const handleSave = () => {
@@ -212,18 +217,33 @@ export function ReportEditor({ open, onOpenChange, report, onSave }: ReportEdito
                         />
                       )}
                       {section.type === 'chart' && (
-                        <Textarea
-                          placeholder="Paste Plotly chart JSON data here..."
-                          value={JSON.stringify(section.content, null, 2)}
-                          onChange={(e) => {
-                            try {
-                              const content = JSON.parse(e.target.value);
-                              updateSection(section.id, { content });
-                            } catch {}
-                          }}
-                          rows={6}
-                          className="font-mono text-sm"
-                        />
+                        <Tabs defaultValue="builder" className="w-full">
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="builder">Chart Builder</TabsTrigger>
+                            <TabsTrigger value="manual">Manual JSON</TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="builder" className="mt-4">
+                            <ChartBuilder
+                              onChartCreate={handleChartCreate(section.id)}
+                              initialData={section.content}
+                              initialTitle={section.title}
+                            />
+                          </TabsContent>
+                          <TabsContent value="manual" className="mt-4">
+                            <Textarea
+                              placeholder="Paste Plotly chart JSON data here..."
+                              value={JSON.stringify(section.content, null, 2)}
+                              onChange={(e) => {
+                                try {
+                                  const content = JSON.parse(e.target.value);
+                                  updateSection(section.id, { content });
+                                } catch {}
+                              }}
+                              rows={6}
+                              className="font-mono text-sm"
+                            />
+                          </TabsContent>
+                        </Tabs>
                       )}
                       {section.type === 'table' && (
                         <Tabs defaultValue="manual" className="w-full">

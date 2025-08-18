@@ -208,5 +208,176 @@ export const sampleReports: Report[] = [
         }
       }
     ]
+  },
+  {
+    id: '4',
+    title: 'Advanced Data Visualization Showcase',
+    topic: 'Product Analytics',
+    description: 'Comprehensive dashboard showcasing advanced chart types and visualization techniques for complex data analysis.',
+    publishedAt: '2024-01-20T14:30:00Z',
+    status: 'published',
+    content: [
+      {
+        id: 'h4-1',
+        type: 'heading',
+        title: 'Product Performance Overview',
+        content: ''
+      },
+      {
+        id: 't4-1',
+        type: 'text',
+        title: '',
+        content: 'This showcase demonstrates the platform\'s advanced visualization capabilities using real-world data patterns. Each chart type serves specific analytical purposes and provides unique insights into different aspects of business performance.'
+      },
+      {
+        id: 'c4-1',
+        type: 'chart',
+        title: 'Customer Satisfaction Radar Chart',
+        content: {
+          data: [{
+            type: 'scatterpolar',
+            r: [85, 78, 92, 88, 75, 90],
+            theta: ['Product Quality', 'Customer Service', 'Value for Money', 'User Experience', 'Delivery Speed', 'Brand Trust'],
+            fill: 'toself',
+            fillcolor: 'rgba(99, 102, 241, 0.3)',
+            line: { color: '#6366f1', width: 2 },
+            marker: { color: '#6366f1', size: 8 },
+            name: 'Current Performance'
+          }],
+          layout: {
+            polar: {
+              radialaxis: { 
+                visible: true,
+                range: [0, 100],
+                tickmode: 'linear',
+                tick0: 0,
+                dtick: 20
+              }
+            },
+            showlegend: false,
+            margin: { l: 60, r: 60, t: 60, b: 60 }
+          }
+        }
+      },
+      {
+        id: 'c4-2',
+        type: 'chart',
+        title: 'Sales Distribution by Region',
+        content: {
+          data: [{
+            values: [32, 28, 24, 16],
+            labels: ['North America', 'Europe', 'Asia Pacific', 'Other'],
+            type: 'pie',
+            marker: { 
+              colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+              line: { color: '#ffffff', width: 2 }
+            },
+            textinfo: 'label+percent',
+            textposition: 'auto',
+            hovertemplate: '<b>%{label}</b><br>%{percent}<br>%{value}%<extra></extra>'
+          }],
+          layout: {
+            showlegend: false,
+            margin: { l: 40, r: 40, t: 60, b: 40 }
+          }
+        }
+      },
+      {
+        id: 'c4-3',
+        type: 'chart',
+        title: 'Revenue vs Marketing Spend Correlation',
+        content: {
+          data: [{
+            x: [10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
+            y: [45, 55, 68, 78, 85, 92, 98, 105, 115, 125],
+            type: 'scatter',
+            mode: 'markers+lines',
+            marker: { 
+              color: '#8b5cf6',
+              size: 10,
+              opacity: 0.8
+            },
+            line: { color: '#8b5cf6', width: 2 },
+            name: 'Revenue vs Marketing'
+          }],
+          layout: {
+            xaxis: { title: 'Marketing Spend ($000)' },
+            yaxis: { title: 'Revenue ($000)' },
+            showlegend: false,
+            margin: { l: 60, r: 40, t: 60, b: 60 }
+          }
+        }
+      },
+      {
+        id: 'c4-4',
+        type: 'chart',
+        title: 'Monthly Active Users Growth',
+        content: {
+          data: [{
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [12500, 14200, 16800, 18500, 21200, 24600, 28300, 31200, 34800, 38500, 42300, 47100],
+            type: 'scatter',
+            mode: 'lines',
+            fill: 'tonexty',
+            fillcolor: 'rgba(16, 185, 129, 0.3)',
+            line: { color: '#10b981', width: 3 },
+            name: 'Active Users'
+          }],
+          layout: {
+            xaxis: { title: 'Month' },
+            yaxis: { title: 'Active Users', tickformat: ',.0f' },
+            showlegend: false,
+            margin: { l: 60, r: 40, t: 60, b: 60 }
+          }
+        }
+      },
+      {
+        id: 'c4-5',
+        type: 'chart',
+        title: 'Response Time Distribution',
+        content: {
+          data: [{
+            x: [120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500],
+            type: 'histogram',
+            marker: { 
+              color: '#f59e0b',
+              opacity: 0.8
+            },
+            name: 'Response Times'
+          }],
+          layout: {
+            xaxis: { title: 'Response Time (ms)' },
+            yaxis: { title: 'Frequency' },
+            showlegend: false,
+            margin: { l: 60, r: 40, t: 60, b: 60 }
+          }
+        }
+      },
+      {
+        id: 'c4-6',
+        type: 'chart',
+        title: 'Performance Metrics Box Plot',
+        content: {
+          data: [{
+            y: [85, 90, 88, 92, 87, 89, 91, 86, 93, 88, 90, 89, 94, 87, 91, 88, 90, 92, 89, 87],
+            type: 'box',
+            name: 'Performance Score',
+            marker: { color: '#ec4899' },
+            boxpoints: 'outliers'
+          }],
+          layout: {
+            yaxis: { title: 'Performance Score (%)' },
+            showlegend: false,
+            margin: { l: 60, r: 40, t: 60, b: 60 }
+          }
+        }
+      },
+      {
+        id: 't4-2',
+        type: 'text',
+        title: 'Key Insights',
+        content: 'The advanced visualizations reveal several important patterns:\n\n• Customer satisfaction is strongest in product quality and brand trust\n• North America remains our largest market but Asia Pacific shows rapid growth\n• Strong positive correlation between marketing spend and revenue\n• User growth shows consistent acceleration throughout the year\n• Response times cluster around 200-400ms with few outliers\n• Performance metrics show stable distribution with occasional peaks'
+      }
+    ]
   }
 ];

@@ -14,6 +14,7 @@ import { ChartComponent } from '@/components/ChartComponent';
 import { TableComponent } from '@/components/TableComponent';
 import { PdfExport } from '@/components/PdfExport';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
+import { VisualizationGallery } from '@/components/VisualizationGallery';
 import { useReports } from '@/hooks/use-reports';
 import { useKV } from '@github/spark/hooks';
 import { 
@@ -24,7 +25,8 @@ import {
   ArrowLeft,
   CircleQuestion,
   Share,
-  Download
+  Download,
+  ChartBar
 } from '@phosphor-icons/react';
 import { Report, ReportSection } from '@/lib/types';
 import { Toaster } from '@/components/ui/sonner';
@@ -113,9 +115,23 @@ function App() {
     <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-foreground mb-4">Data Analytics Platform</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
           Professional reporting platform for data analysis with embeddable charts and tables
         </p>
+        <div className="flex justify-center gap-3">
+          <Button onClick={handleCreateReport} size="lg">
+            <Plus className="w-4 h-4 mr-2" />
+            Create Report
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg"
+            onClick={() => setCurrentView('gallery')}
+          >
+            <ChartBar className="w-4 h-4 mr-2" />
+            Chart Gallery
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 mb-8">
@@ -297,7 +313,21 @@ function App() {
     );
   };
 
-  const renderEmbedView = () => {
+  const renderGallery = () => (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <Button
+          variant="outline"
+          onClick={() => setCurrentView('dashboard')}
+          className="mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Button>
+      </div>
+      <VisualizationGallery />
+    </div>
+  );
     if (!embedId || !embedType) return null;
 
     // Find the content across all reports
@@ -358,6 +388,17 @@ function App() {
               <BarChart3 className="w-6 h-6" />
               Analytics Platform
             </button>
+            
+            <nav className="hidden md:flex items-center gap-6">
+              <button
+                onClick={() => setCurrentView('gallery')}
+                className={`text-sm hover:text-primary transition-colors ${
+                  currentView === 'gallery' ? 'text-primary font-medium' : 'text-muted-foreground'
+                }`}
+              >
+                Chart Gallery
+              </button>
+            </nav>
           </div>
           
           <div className="flex items-center gap-4">
@@ -388,6 +429,7 @@ function App() {
           
           {currentView === 'dashboard' && renderDashboard()}
           {currentView === 'report' && renderReport()}
+          {currentView === 'gallery' && renderGallery()}
 
           <EmbedDialog
             open={showEmbedDialog}
@@ -436,20 +478,22 @@ function App() {
                 <div>
                   <h3 className="font-semibold mb-3">Features</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>Interactive Plotly Charts</li>
+                    <li>10+ Chart Types</li>
+                    <li>Interactive Chart Builder</li>
                     <li>CSV Data Upload</li>
                     <li>Embeddable Content</li>
-                    <li>Public Reports</li>
-                    <li>Export to Markdown</li>
+                    <li>Color Schemes & Styling</li>
+                    <li>Export to PDF/Markdown</li>
                   </ul>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-3">Getting Started</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>Browse existing reports</li>
+                    <li>Explore the Chart Gallery</li>
                     <li>Upload CSV data or create charts</li>
-                    <li>Create and edit reports</li>
+                    <li>Build professional reports</li>
                     <li>Share via embed codes</li>
+                    <li>Export and publish</li>
                   </ul>
                 </div>
               </div>

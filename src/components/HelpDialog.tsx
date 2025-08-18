@@ -70,9 +70,39 @@ export function HelpDialog({ open, onOpenChange }: HelpDialogProps) {
             <ul className="text-sm text-muted-foreground space-y-1 ml-4">
               <li>• <strong>Headings:</strong> Structure your content</li>
               <li>• <strong>Text:</strong> Analysis and explanations</li>
-              <li>• <strong>Charts:</strong> Plotly.js JSON data</li>
+              <li>• <strong>Charts:</strong> Interactive visualizations with Chart Builder</li>
               <li>• <strong>Tables:</strong> Structured data display</li>
             </ul>
+            
+            <div className="mt-4 bg-accent/10 p-3 rounded-lg">
+              <h4 className="font-medium text-sm mb-2">📊 Chart Builder Features:</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div>
+                  <strong>Chart Types:</strong>
+                  <ul className="ml-2 mt-1 space-y-1">
+                    <li>• Bar & Column Charts</li>
+                    <li>• Line & Area Charts</li>
+                    <li>• Pie & Donut Charts</li>
+                    <li>• Scatter Plots</li>
+                    <li>• Histograms</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Advanced Types:</strong>
+                  <ul className="ml-2 mt-1 space-y-1">
+                    <li>• Box Plots</li>
+                    <li>• Heatmaps</li>
+                    <li>• Radar Charts</li>
+                    <li>• Funnel Charts</li>
+                    <li>• Stacked Variants</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-2">
+                <strong className="text-xs">Data Sources:</strong>
+                <span className="text-xs text-muted-foreground ml-2">CSV Upload, Manual Entry, Copy & Paste</span>
+              </div>
+            </div>
           </div>
 
           <Separator />
@@ -120,23 +150,41 @@ export function HelpDialog({ open, onOpenChange }: HelpDialogProps) {
           <div>
             <h3 className="font-semibold mb-3 flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
-              Chart Data Format
+              Chart Data & Styling
             </h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Use Plotly.js format for charts. Example:
+              Create stunning visualizations with powerful customization options:
             </p>
-            <pre className="bg-muted p-3 rounded-lg text-xs overflow-x-auto">
-{`{
-  "data": [{
-    "x": ["A", "B", "C"],
-    "y": [1, 2, 3],
-    "type": "bar"
-  }],
-  "layout": {
-    "title": "Sample Chart"
-  }
-}`}
-            </pre>
+            
+            <div className="space-y-3">
+              <div className="bg-muted p-3 rounded-lg">
+                <h4 className="font-medium text-sm mb-2">🎨 Styling Options:</h4>
+                <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                  <li>• Multiple color schemes (Viridis, Blues, Reds, etc.)</li>
+                  <li>• Customizable grid lines and legends</li>
+                  <li>• Stacked and grouped chart variants</li>
+                  <li>• Responsive layouts for all devices</li>
+                </ul>
+              </div>
+              
+              <div className="bg-muted p-3 rounded-lg">
+                <h4 className="font-medium text-sm mb-2">📤 Data Import:</h4>
+                <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                  <li>• Upload CSV files directly</li>
+                  <li>• Paste data from spreadsheets</li>
+                  <li>• Manual JSON entry for advanced users</li>
+                  <li>• Automatic column detection</li>
+                </ul>
+              </div>
+
+              <div className="bg-accent/10 p-3 rounded-lg">
+                <h4 className="font-medium text-sm mb-2">💡 Pro Tip:</h4>
+                <p className="text-sm text-muted-foreground">
+                  Use the Chart Builder for quick setup, then switch to Manual JSON for advanced customizations.
+                  Plotly.js format supported for maximum flexibility.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-between items-center pt-4">

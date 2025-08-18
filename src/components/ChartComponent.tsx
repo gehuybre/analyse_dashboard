@@ -63,6 +63,8 @@ export function ChartComponent({
           },
           font: { family: 'Inter, sans-serif' },
           autosize: true,
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)'
         }}
         config={{
           displayModeBar: false,
